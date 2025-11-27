@@ -1,20 +1,31 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/screens/meal_detail.dart';
 import 'package:meals_app/widgets/meal_item.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, required this.title, required this.meals});
+  const MealsScreen({super.key, this.title, required this.meals});
 
-  final String title;
+  final String ? title;
 
   final List<Meal> meals;
+
+  void _selectMeal(BuildContext context, Meal meal) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => MealDetail(meal: meal),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     Widget content = ListView.builder(
       itemBuilder: (context, index) {
-        return MealItem(meal: meals[index]);
+        return MealItem(
+          meal: meals[index],
+          onSelectMeal: _selectMeal,
+        );
       },
       itemCount: meals.length,
     );
@@ -41,8 +52,13 @@ class MealsScreen extends StatelessWidget {
         ),
       );
     }
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
+    if (title == null) {
+      return content;
+    }
+
+
+      return Scaffold(
+      appBar: AppBar(title: Text(title!)),
 
       body: content,
     );
